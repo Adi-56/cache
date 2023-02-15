@@ -1,55 +1,85 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+    int RQ[100],i,j,n,TotalHeadMoment=0,initial,size,move;
+    printf("Enter the number of Requests\n");
+    scanf("%d",&n);
+    printf("Enter the Requests sequence\n");
+    for(i=0;i<n;i++)
+     scanf("%d",&RQ[i]);
+    printf("Enter initial head position\n");
+    scanf("%d",&initial);
+    printf("Enter total disk size\n");
+    scanf("%d",&size);
+    printf("Enter the head movement direction for high 1 and for low 0\n");
+    scanf("%d",&move);
+    
+    // logic for Scan disk scheduling
+    
+        /*logic for sort the request array */
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<n-i-1;j++)
+        {
+            if(RQ[j]>RQ[j+1])
+            {
+                int temp;
+                temp=RQ[j];
+                RQ[j]=RQ[j+1];
+                RQ[j+1]=temp;
+            }
 
-#define MAX_REQUESTS 100
-
-int compare(const void *a, const void *b) {
-  return (*(int*)a - *(int*)b);
-}
-
-int main() {
-  int requests[MAX_REQUESTS];
-  int head;
-  int numRequests;
-  int direction;
-
-  printf("Enter the number of disk requests: ");
-  scanf("%d", &numRequests);
-  printf("Enter the requests in order of arrival:\n");
-  for (int i = 0; i < numRequests; i++) {
-    scanf("%d", &requests[i]);
-  }
-  printf("Enter the initial position of the disk head: ");
-  scanf("%d", &head);
-  printf("Enter the direction (0 for left, 1 for right): ");
-  scanf("%d", &direction);
-
-  qsort(requests, numRequests, sizeof(int), compare);
-
-  int totalSeekTime = 0;
-  int current = head;
-  for (int i = 0; i < numRequests; i++) {
-    if (direction == 0) {
-      if (requests[i] >= head) {
-        break;
-      }
-    } else {
-      if (requests[i] <= head) {
-        continue;
-      }
+        }
     }
-    int seekTime = abs(requests[i] - current);
-    totalSeekTime += seekTime;
-    current = requests[i];
-  }
-  if (direction == 0) {
-    totalSeekTime += abs(current - requests[numRequests - 1]);
-  } else {
-    totalSeekTime += abs(requests[0]);
-  }
 
-  printf("The total seek time is: %d\n", totalSeekTime);
-  printf("The average seek time is: %.2f\n", (float) totalSeekTime / numRequests);
-
-  return 0;
+    int index;
+    for(i=0;i<n;i++)
+    {
+        if(initial<RQ[i])
+        {
+            index=i;
+            break;
+        }
+    }
+   
+    // if movement is towards high value
+    if(move==1)
+    {
+        for(i=index;i<n;i++)
+        {
+            TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+            initial=RQ[i];
+        }
+        //  last movement for max size 
+        TotalHeadMoment=TotalHeadMoment+abs(size-RQ[i-1]-1);
+        initial = size-1;
+        for(i=index-1;i>=0;i--)
+        {
+             TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+             initial=RQ[i];
+            
+        }
+    }
+    // if movement is towards low value
+    else
+    {
+        for(i=index-1;i>=0;i--)
+        {
+            TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+            initial=RQ[i];
+        }
+        //  last movement for min size 
+        TotalHeadMoment=TotalHeadMoment+abs(RQ[i+1]-0);
+        initial =0;
+        for(i=index;i<n;i++)
+        {
+             TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
+             initial=RQ[i];
+            
+        }
+    }
+    
+    printf("Total head movement is %d",TotalHeadMoment);
+    return 0;
 }
