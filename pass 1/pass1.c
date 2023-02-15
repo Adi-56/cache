@@ -1,8 +1,7 @@
-
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-int main()
+void main()
 {
     char opcode[10], operand[10], label[10], code[10], mnemonic[10];
     int locctr, start, length;
@@ -19,7 +18,7 @@ int main()
     if(strcmp(opcode, "START")==0)
     {
         start = atoi(operand);
-        //printf("%d",start);
+        printf("%d",start);
         locctr = start;
         fprintf(fp4, "\t    %s\t%s\t%s\n", label, opcode, operand);
         fscanf(fp1, "%s\t%s\t%s", label, opcode, operand);
@@ -47,26 +46,18 @@ int main()
                 locctr+=3;
                 break;
             }
-             fscanf(fp2,"%s\t%s",code,mnemonic);
+            fscanf(fp2, "%s\t%s", code, mnemonic);
         }
 
 
         if(strcmp(opcode, "WORD")==0)
-        {
             locctr+=3;
-        }
         else if(strcmp(opcode, "RESW")==0)
-        {
             locctr+=(3*(atoi(operand)));
-        }
         else if(strcmp(opcode, "RESB")==0)
-        {
             locctr+=(atoi(operand));
-        }
         else if(strcmp(opcode, "BYTE")==0)
-        {
             ++locctr;
-        }
 
         fprintf(fp4, "%s\t%s\t%s\t\n", label, opcode, operand);
         fscanf(fp1, "%s\t%s\t%s", label, opcode, operand);
